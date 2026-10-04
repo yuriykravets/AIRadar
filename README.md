@@ -22,6 +22,7 @@ Copy `.env.example` or export values in your hosting platform:
 - `DATABASE_PATH` — SQLite file location; defaults to `./data/ai_radar.db`.
 - `INGEST_INTERVAL_HOURS` — scheduled fetch interval; defaults to `6`.
 - `INGEST_ON_STARTUP` — fetch feeds when the server starts; defaults to `true`.
+- `CORS_ORIGINS` — comma-separated browser origins allowed to call the API; defaults to `*`. Set this to your Cloudflare Worker URL in production, for example `https://ai-radar.example.workers.dev`.
 
 No API keys are required or read by the application.
 
@@ -45,10 +46,47 @@ The provider label becomes the article filter value. Restart the app after chang
 
 ## Deployment
 
-This is a single FastAPI service, so it can run on free Python web hosting such as Render, Railway, or Fly.io (subject to their current free-tier terms). Use the start command:
+The full application is a single FastAPI service, so it can run on free Python web hosting such as Render, Railway, or Fly.io (subject to their current free-tier terms). Use the start command:
 
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
 For a persistent SQLite database, attach a persistent disk/volume and set `DATABASE_PATH` to a path on it. Ephemeral free instances may lose SQLite data on redeploy; the app will safely rebuild its database and re-ingest feeds. For multi-instance production hosting, use a shared database and a single scheduled worker to avoid duplicate scheduled fetches.
+
+### Deploy the backend to Render Free
+
+Create a new **Web Service** in Render using this repository and set:
+
+- **Runtime:** Python 3
+- **Build command:** `pip install -r requirements.txt`
+- **Start command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+The application entry point is `app.main:app`. Render provides `$PORT`; do not replace it with a fixed port. Add these environment variables in Render:
+
+```text
+INGEST_ON_STARTUP=true
+CORS_ORIGINS=https://your-cloudflare-worker.workers.dev
+```
+
+Render health checks can use `GET /health`, which returns `{"status":"ok"}`. The existing `/api/articles` and `/api/health` endpoints remain available. If you use SQLite on an ephemeral Free instance, data can be lost when the service restarts; the app will recreate the database and ingest feeds again.
+
+### Cloudflare
+
+Cloudflare Workers cannot run the Python FastAPI process directly. This repository includes `wrangler.toml` and `worker.js` so Cloudflare can host the static frontend and proxy API requests to a separately deployed FastAPI backend.
+
+1. Deploy the FastAPI app using the command above and copy its public URL.
+2. Set the backend URL for Wrangler:
+
+   ```bash
+   npx wrangler secret put BACKEND_URL
+   # Enter the FastAPI URL, for example https://ai-radar-api.example.com
+   ```
+
+3. Deploy the Cloudflare frontend:
+
+   ```bash
+   npx wrangler deploy
+   ```
+
+The Worker serves `app/static` and forwards `/api/*` to `BACKEND_URL`. Without `BACKEND_URL`, the frontend still deploys, but API requests return a clear 503 response.

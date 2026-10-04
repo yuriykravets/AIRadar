@@ -1,0 +1,8 @@
+name = "ai-radar"
+main = "worker.js"
+compatibility_date = "2026-10-04"
+
+[assets]
+directory = "./app/static"
+binding = "ASSETS"
+

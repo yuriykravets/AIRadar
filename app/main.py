@@ -1,9 +1,11 @@
 import asyncio
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -30,6 +32,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="AI Radar", description="AI updates for developers", lifespan=lifespan)
+cors_origins = [origin.strip() for origin in os.getenv("CORS_ORIGINS", "*").split(",") if origin.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "OPTIONS"],
+    allow_headers=["*"],
+)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 
@@ -51,6 +61,11 @@ def health():
     with get_db() as db:
         states = [dict(row) for row in db.execute("SELECT source_url, last_successful_fetch FROM feed_state")]
     return {"status": "ok", "feeds": states}
+
+
+@app.get("/health")
+def render_health():
+    return {"status": "ok"}
 
 
 @app.get("/")
