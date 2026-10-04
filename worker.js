@@ -16,7 +16,14 @@ export default {
       );
     }
 
+    // FastAPI serves frontend assets at /static/* locally. Wrangler's assets
+    // directory is already the contents of that folder, so map the same
+    // browser paths to the deployed asset root.
+    if (url.pathname.startsWith('/static/')) {
+      url.pathname = url.pathname.slice('/static'.length) || '/';
+      return env.ASSETS.fetch(new Request(url, request));
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
-

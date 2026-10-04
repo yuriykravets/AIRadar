@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Radar</title><link rel="stylesheet" href="/static/styles.css">
+  <meta name="theme-color" content="#09090b"><title>AI Radar — Developer updates</title>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <main class="shell">
-    <header><div class="eyebrow">DEVELOPER NEWS</div><h1>AI Radar</h1><p>AI updates for developers</p></header>
-    <nav class="filters" aria-label="Filter by provider">
-      <button class="active" data-provider="All">All</button><button data-provider="OpenAI">OpenAI</button><button data-provider="Gemini">Gemini</button><button data-provider="Anthropic">Anthropic</button>
-    </nav>
+    <header class="masthead"><div><div class="eyebrow mono">DEVELOPER NEWS</div><h1>AI Radar</h1><p>AI updates for developers</p></div><button class="command-trigger" id="command-trigger" aria-label="Search updates"><span class="search-icon">⌕</span><span>Search updates</span><kbd>⌘ K</kbd></button></header>
+    <div class="toolbar"><nav class="filters" aria-label="Filter by provider"><button class="active" data-provider="All"><span class="provider-mark all-mark">✦</span>All</button><button data-provider="OpenAI"><span class="provider-mark openai-mark">◉</span>OpenAI</button><button data-provider="Gemini"><span class="provider-mark gemini-mark">✦</span>Gemini</button><button data-provider="Anthropic"><span class="provider-mark anthropic-mark">✳</span>Anthropic</button></nav><div class="result-count mono" id="result-count">— updates</div></div>
+    <section class="brief section-block" aria-labelledby="brief-title"><div class="section-kicker mono">RADAR BRIEF <span>•</span> LATEST SIGNAL</div><h2 id="brief-title">What changed for developers</h2><div id="brief-items" class="brief-grid"><div class="loading">Building the brief…</div></div></section>
+    <section class="playground section-block" aria-labelledby="playground-title"><div class="section-kicker mono">CODE PLAYGROUND <span>•</span> COPY-READY</div><h2 id="playground-title">Start from a proven pattern</h2><p class="section-copy">Explore a provider pattern and copy a starter command. Your API key stays local.</p><div class="playground-controls"><div class="custom-select" data-select="provider"><span class="select-label mono">PROVIDER</span><button class="select-trigger" aria-expanded="false"><span class="selected-icon">◉</span><span class="selected-value">OpenAI</span><span class="chevron">⌄</span></button><div class="select-menu"><button data-value="OpenAI"><span class="openai-mark">◉</span> OpenAI</button><button data-value="Gemini"><span class="gemini-mark">✦</span> Gemini</button><button data-value="Anthropic"><span class="anthropic-mark">✳</span> Anthropic</button></div></div><div class="custom-select" data-select="task"><span class="select-label mono">TASK</span><button class="select-trigger" aria-expanded="false"><span class="selected-value">Text generation</span><span class="chevron">⌄</span></button><div class="select-menu"><button data-value="Text generation">Text generation</button><button data-value="Structured JSON">Structured JSON</button><button data-value="Streaming output">Streaming output</button></div></div></div><div class="language-tabs" role="tablist" aria-label="Code language"><button class="active" data-language="Python">Python</button><button data-language="TypeScript">TypeScript</button><button data-language="cURL">cURL</button></div><div class="code-wrap"><div class="code-head"><span class="file-name"><span class="file-dot"></span><span id="file-name">starter.py</span></span><button class="copy-button" id="copy-code"><span>⧉</span> Copy</button></div><pre class="code-body"><code id="code-output"></code></pre></div><div class="copy-toast" id="copy-toast">✓ Copied to clipboard</div></section>
     <section id="news" aria-live="polite"><div class="loading">Loading the latest signal…</div></section>
   </main>
+  <div class="search-overlay" id="search-overlay" hidden><div class="search-modal"><div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search updates, models, SDKs…" autocomplete="off"><kbd>ESC</kbd></div><div id="search-results" class="search-results"></div></div></div>
   <script src="/static/app.js"></script>
 </body>
 </html>
-
