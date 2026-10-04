@@ -1,0 +1,10 @@
+{
+  "name": "AI Radar",
+  "short_name": "AI Radar",
+  "description": "The world of AI, decoded.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [{"src":"/ai_radar_icon.svg","sizes":"64x64","type":"image/svg+xml","purpose":"any maskable"}]
+}
